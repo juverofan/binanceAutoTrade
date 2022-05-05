@@ -9,7 +9,7 @@ Requirements:<br>
 <br>
 <b>SETUP GUIDE</b><br>
 <b>Step 1: </b> Install Python 3.9<br>
-<b>Step 2: </b> Install Binance API (Go to API Management, create and save API key and API secret key)<br>
+<b>Step 2: </b> Install Binance API (Go to API Management, create and save API key and API secret key, then paste into viewUnstableCoin.py and settings.py)<br>
 <b>Step 3: </b> Install python-binance (use Command line: pip install python-binance)<br>
 <br><br>
 <b>Scripts:<br>
