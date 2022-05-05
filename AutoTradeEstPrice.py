@@ -8,7 +8,6 @@ import sys
 import argparse
 import math
 import settings
-parser = argparse.ArgumentParser() 
 
 def getPrice(coin, pr):
     pr1 = 0.0
@@ -24,10 +23,6 @@ def getPrice(coin, pr):
     if pr1 == 0.0:
         return pr1
 
-
-parser.add_argument("-c", "--coin", help="The coin you want to trade")
-parser.add_argument("-u", "--usd", help="The volume")
-args = parser.parse_args()
 
 print("===============SCRIPT FOR AUTOTRADING FROM BINANCE=================\nAuthor: A.P\nWebsite: https://topvl.net\nBitcoin Address: 1Dbu7Hwrmd2iT6xSxKf4rYrYiufukQLAjt")
 print("===================================================================")
