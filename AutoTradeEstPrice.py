@@ -66,6 +66,9 @@ def resetDf():
     print("Num Max: "+str(numMax)+" Num Min: "+str(numMin))
     return hourPrice
 
+def roundDown(pr, a):
+    return float(math.floor(pr/a))*a 
+
 hourPrice=resetDf()
 max_value = max(hourPrice)
 min_value = min(hourPrice)
@@ -77,21 +80,37 @@ action = start_action
 volume = 0.0
 amount = client.get_asset_balance(asset=coin)['free']
 usdamount = client.get_asset_balance(settings.paircoin)['free']
+
+roundLevel = 1
+if min_value > 1000
+    roundLevel = 0.001
+elif max_value < 1.0:
+    roundLevel = 1
+else:
+    roundLevel = 0.01
+
+
 if settings.usd == 0:
     if float(amount)>0 and action == "SELL":
-        volume = math.floor(float(amount))
+        volume = roundDown(float(amount),roundLevel)
     if float(usdamount)>0 and action == "BUY":
-        volume = math.floor(float(usdamount)/(min_value*1.003))
+        volume = roundDown(float(usdamount)/(min_value*1.003),roundLevel)
 else:
     if float(amount)>0 and action == "SELL":
-        volume = math.floor(float(usdamount)/(max_value/1.003))
+        volume = roundDown(float(usdamount)/(max_value/1.003),roundLevel)
         if volume > float(amount):
-            volume = math.floor(float(amount))
+            volume = roundDown(float(amount),roundLevel)
     if float(usdamount)>0 and action == "BUY":
         if float(settings.usd) < float(usdamount):
-            volume = math.floor(float(float(settings.usd)/(min_value*1.003)))
+            volume = roundDown(float(float(settings.usd)/(min_value*1.003)),roundLevel)
         else: 
-            volume = math.floor(float(usdamount)/(min_value*1.003))
+            volume = roundDown(float(usdamount)/(min_value*1.003),roundLevel)
+
+print("Checking...\n The amount of "+paircoin+": "+str(usdamount)+" | The amount of "+coin+": "+str(amount))
+
+if volume = 0.0:
+    sys.exit("Invalid quantity (too small to trade)")
+
 stop = 0
 
 t = 0
