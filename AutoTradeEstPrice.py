@@ -81,11 +81,11 @@ volume = 0.0
 amount = client.get_asset_balance(asset=coin)['free']
 usdamount = client.get_asset_balance(settings.paircoin)['free']
 
-roundLevel = 1
+roundLevel = 1.0
 if min_value > 1000
     roundLevel = 0.001
 elif max_value < 1.0:
-    roundLevel = 1
+    roundLevel = 1.0
 else:
     roundLevel = 0.01
 
