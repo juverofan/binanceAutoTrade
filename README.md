@@ -27,3 +27,5 @@ Requirements:<br>
  - usd: the volume of paircoin (USD) you want to trade, if set this value equals 0, the volume equals the amount of coin (pair coin) you have.
  - limit: the value (USD) you want to stop trading 
 
+<br><br>
+<b>Warning: </b>You can lose your money, if the prices changes too much.
