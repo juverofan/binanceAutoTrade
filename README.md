@@ -28,4 +28,4 @@ Requirements:<br>
  - limit: the value (USD) you want to stop trading 
 
 <br><br>
-<b>Warning: </b>You can lose your money, if the prices changes too much.
+<b><font color='red'>Warning: </font></b>You can lose your money, if the prices changes too much.
