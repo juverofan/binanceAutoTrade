@@ -113,7 +113,7 @@ def getVolume(action, amount, usdamount, min_value, max_value, roundLevel, usdse
 
 volume = getVolume(action, amount, usdamount, min_value, max_value, roundLevel, settings.usd)
 
-print("Checking...\n The amount of "+settings.paircoin+": "+str(usdamount)+" | The amount of "+coin+": "+str(amount)+"\nTry "+start_action+" "+coin+" with volume: "+str(volume))
+print("\nChecking...\n The amount of "+settings.paircoin+": "+str(usdamount)+" | The amount of "+coin+": "+str(amount)+"\nTry "+start_action+" "+coin+" with volume: "+str(volume))
 
 if volume == 0.0:
     sys.exit("Invalid quantity (too small to trade)")
@@ -125,7 +125,12 @@ selltry = 0
 while stop == 0:
     prices = client.get_all_tickers()
     price = getPrice(coin, prices)
-    print("Current price: "+price+" -> max: "+str(max_value/float(price) - 1.0) + " -> min: "+str(float(price)/min_value- 1.0) )
+    if float(price) > float(max_value):
+        print("Current price: "+price+" [ min ("+str(round(float(price)/min_value,3)- 1.0) +") -> max ("+str(round(max_value/float(price),3) - 1.0) + ") -> current ]")
+    elif float(price) < float(min_value):
+        print("Current price: "+price+" [ current -> min ("+str(round(float(price)/min_value,3)- 1.0) + ") -> max ("+str(round(max_value/float(price),3) - 1.0) + ") ]")
+    else:
+        print("Current price: "+price+" [ min ("+str(round(float(price)/min_value,3)- 1.0) + ") -> current -> max ("+str(round(max_value/float(price),3) - 1.0)+") ]" )
 
     if action == "SELL" and start_action == "SELL":
         selltry += 1
