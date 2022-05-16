@@ -82,7 +82,7 @@ amount = client.get_asset_balance(asset=coin)['free']
 usdamount = client.get_asset_balance(settings.paircoin)['free']
 
 roundLevel = 1.0
-if min_value > 1000
+if min_value > 1000:
     roundLevel = 0.001
 elif max_value < 1.0:
     roundLevel = 1.0
@@ -106,9 +106,9 @@ else:
         else: 
             volume = roundDown(float(usdamount)/(min_value*1.003),roundLevel)
 
-print("Checking...\n The amount of "+paircoin+": "+str(usdamount)+" | The amount of "+coin+": "+str(amount))
+print("Checking...\n The amount of "+settings.paircoin+": "+str(usdamount)+" | The amount of "+coin+": "+str(amount))
 
-if volume = 0.0:
+if volume == 0.0:
     sys.exit("Invalid quantity (too small to trade)")
 
 stop = 0
