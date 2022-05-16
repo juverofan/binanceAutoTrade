@@ -55,7 +55,7 @@ def resetDf():
     max_value = max(hourPrice)
     min_value = min(hourPrice)
     avg_value = 0 if len(hourPrice) == 0 else sum(hourPrice)/len(hourPrice)
-    print("max: "+str(max_value)+" min: "+str(min_value)+" diff: "+ str(max_value/min_value)+ " avg: "+str(avg_value)+ " avgPrice: "+str(avgPrice))
+    print("max value: "+str(max_value)+" min value: "+str(min_value)+" diff: "+ str(max_value/min_value)+ " avg value "+str(avg_value)+ " ")
 
     numMax = 0
     numMin = 0
@@ -91,21 +91,27 @@ else:
     roundLevel = 0.01
 
 
-if settings.usd == 0:
-    if float(amount)>0 and action == "SELL":
-        volume = roundDown(float(amount),roundLevel)
-    if float(usdamount)>0 and action == "BUY":
-        volume = roundDown(float(usdamount)/(min_value*1.003),roundLevel)
-else:
-    if float(amount)>0 and action == "SELL":
-        volume = roundDown(float(usdamount)/(max_value/1.003),roundLevel)
-        if volume > float(amount):
+def getVolume(action, amount, usdamount, min_value, max_value, roundLevel, usdset):
+    volume = 0.0
+    if usdset == 0:
+        if float(amount)>0 and action == "SELL":
             volume = roundDown(float(amount),roundLevel)
-    if float(usdamount)>0 and action == "BUY":
-        if float(settings.usd) < float(usdamount):
-            volume = roundDown(float(float(settings.usd)/(min_value*1.003)),roundLevel)
-        else: 
+        if float(usdamount)>0 and action == "BUY":
             volume = roundDown(float(usdamount)/(min_value*1.003),roundLevel)
+    else:
+        if float(amount)>0 and action == "SELL":
+            volume = roundDown(float(usdamount)/(max_value/1.003),roundLevel)
+            if volume > float(amount):
+                volume = roundDown(float(amount),roundLevel)
+        if float(usdamount)>0 and action == "BUY":
+            if float(usdset) < float(usdamount):
+                volume = roundDown(float(float(usdset)/(min_value*1.003)),roundLevel)
+            else: 
+                volume = roundDown(float(usdamount)/(min_value*1.003),roundLevel)
+    return volume
+
+
+volume = getVolume(action, amount, usdamount, min_value, max_value, roundLevel, settings.usd)
 
 print("Checking...\n The amount of "+settings.paircoin+": "+str(usdamount)+" | The amount of "+coin+": "+str(amount)+"\nTry "+start_action+" "+coin+" with volume: "+str(volume))
 
@@ -119,7 +125,7 @@ selltry = 0
 while stop == 0:
     prices = client.get_all_tickers()
     price = getPrice(coin, prices)
-    print(price+" max: "+str(max_value/float(price)) + " - min: "+str(float(price)/min_value))
+    print("Current price: "+price+" -> max: "+str(max_value/float(price) - 1.0) + " -> min: "+str(float(price)/min_value- 1.0) )
 
     if action == "SELL" and start_action == "SELL":
         selltry += 1
@@ -133,6 +139,8 @@ while stop == 0:
         max_value = max(hourPrice)
         min_value = min(hourPrice)
         avg_value = 0 if len(hourPrice) == 0 else sum(hourPrice)/len(hourPrice)
+        volume = getVolume(action, amount, usdamount, min_value, max_value, roundLevel, settings.usd)
+        print("Reset volume to trade: "+str(volume))
         selltry = 1
 
     if action == "BUY" and start_action == "SELL":
@@ -165,6 +173,8 @@ while stop == 0:
                     max_value = max(hourPrice)
                     min_value = min(hourPrice)
                     avg_value = 0 if len(hourPrice) == 0 else sum(hourPrice)/len(hourPrice)
+                    volume = getVolume(action, amount, usdamount, min_value, max_value, roundLevel, settings.usd)
+                    print("Reset volume to trade: "+str(volume))
             else:
                 try:
                     client.cancel_order(symbol=coin+settings.paircoin,orderId=order['orderId'])
@@ -178,6 +188,8 @@ while stop == 0:
                         max_value = max(hourPrice)
                         min_value = min(hourPrice)
                         avg_value = 0 if len(hourPrice) == 0 else sum(hourPrice)/len(hourPrice)
+                        volume = getVolume(action, amount, usdamount, min_value, max_value, roundLevel, settings.usd)
+                        print("Reset volume to trade: "+str(volume))
                    
     if action == "BUY" and float(price) <= min_value*1.003:
         selltry = 0
@@ -203,6 +215,8 @@ while stop == 0:
                     max_value = max(hourPrice)
                     min_value = min(hourPrice)
                     avg_value = 0 if len(hourPrice) == 0 else sum(hourPrice)/len(hourPrice)
+                    volume = getVolume(action, amount, usdamount, min_value, max_value, roundLevel, settings.usd)
+                    print("Reset volume to trade: "+str(volume))
             else:
                 try:
                     client.cancel_order(symbol=coin+settings.paircoin,orderId=order['orderId'])
@@ -216,8 +230,12 @@ while stop == 0:
                         max_value = max(hourPrice)
                         min_value = min(hourPrice)
                         avg_value = 0 if len(hourPrice) == 0 else sum(hourPrice)/len(hourPrice)
+                        volume = getVolume(action, amount, usdamount, min_value, max_value, roundLevel, settings.usd)
+                        print("Reset volume to trade: "+str(volume))
         
     time.sleep(10)
+    if volume == 0.0:
+        stop = 1
     pamount = client.get_asset_balance(asset=coin)['free']
     usdn = client.get_asset_balance(settings.paircoin)['free']
     if float(pamount) >= float(amount)/1.001 and float(pamount) <= float(amount)*1.001 and float(usdn) > float(usdamount)+settings.limit:
