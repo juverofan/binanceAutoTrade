@@ -2,6 +2,7 @@
 #Author: A.P
 from __future__ import division
 from binance import Client, ThreadedWebsocketManager, ThreadedDepthCacheManager
+from binance.exceptions import BinanceAPIException
 import os
 import time
 import sys
@@ -106,7 +107,7 @@ else:
         else: 
             volume = roundDown(float(usdamount)/(min_value*1.003),roundLevel)
 
-print("Checking...\n The amount of "+settings.paircoin+": "+str(usdamount)+" | The amount of "+coin+": "+str(amount))
+print("Checking...\n The amount of "+settings.paircoin+": "+str(usdamount)+" | The amount of "+coin+": "+str(amount)+"\nTry "+start_action+" "+coin+" with volume: "+str(volume))
 
 if volume == 0.0:
     sys.exit("Invalid quantity (too small to trade)")
