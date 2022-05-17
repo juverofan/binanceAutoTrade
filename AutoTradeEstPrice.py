@@ -243,10 +243,10 @@ while stop == 0:
         stop = 1
     pamount = client.get_asset_balance(asset=coin)['free']
     usdn = client.get_asset_balance(settings.paircoin)['free']
-    if usdn < 10.0 and action == "BUY":
+    if float(usdn) < 10.0 and action == "BUY":
         stop = 1
 
-    if pamount < 10.0*float(price) and action == "SELL":
+    if float(pamount) < 10.0*float(price) and action == "SELL":
         stop = 1
 
     if float(pamount) >= float(amount)/1.001 and float(pamount) <= float(amount)*1.001 and float(usdn) > float(usdamount)+settings.limit:
