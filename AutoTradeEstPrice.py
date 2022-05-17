@@ -246,7 +246,7 @@ while stop == 0:
     if float(usdn) < 10.0 and action == "BUY":
         stop = 1
 
-    if float(pamount) < 10.0*float(price) and action == "SELL":
+    if float(pamount) < 10.0/float(price) and action == "SELL":
         stop = 1
 
     if float(pamount) >= float(amount)/1.001 and float(pamount) <= float(amount)*1.001 and float(usdn) > float(usdamount)+settings.limit:
