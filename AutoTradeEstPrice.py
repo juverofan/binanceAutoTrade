@@ -49,8 +49,8 @@ def resetDf():
     hourPrice = []
     for kline in client.get_historical_klines(coin+settings.paircoin, Client.KLINE_INTERVAL_1MINUTE, "1 hour ago UTC"):
         hourPrice.append(float(kline[1]))
-    print("----THE PRICE OF THE LASTEST HOUR--------")
-    print(hourPrice)
+    #print("----THE PRICE OF THE LASTEST HOUR--------")
+    #print(hourPrice)
 
     max_value = max(hourPrice)
     min_value = min(hourPrice)
@@ -159,39 +159,23 @@ while stop == 0:
     if action == "SELL" and float(price) >= max_value/1.003:
         t += 1 
         if float(price) >= max_value/1.001 or t >= 5:
-            order = client.order_limit_sell(
-                        symbol=coin+settings.paircoin,
-                        quantity=volume,
-                        price=price)
-            print("Trade info: "+str(order))
-            time.sleep(2)
-            if(order['status']=='FILLED'):
-                action = "BUY"
-                fills = order['fills']
-                #print(str(fills))
-                fillAmount = order['fills'][0]['qty']
-                fillPrice = order['fills'][0]['price']
-                currPrice = fillPrice
-                fillSide = order['side']
-                t = 0
-                print("Action: "+str(fillSide)+" - amount: "+str(volume)+" - price: "+str(fillPrice))
-                if start_action == "BUY":
-                    hourPrice=resetDf()
-                    max_value = max(hourPrice)
-                    min_value = min(hourPrice)
-                    avg_value = 0 if len(hourPrice) == 0 else sum(hourPrice)/len(hourPrice)
-                    volume = getVolume(action, coin, settings.paircoin, min_value, max_value, roundLevel, settings.usd)
-                    print("Reset volume to trade: "+str(volume))
-            else:
-                try:
-                    client.cancel_order(symbol=coin+settings.paircoin,orderId=order['orderId'])
-                    print("Transaction's cancelled.")
-                except BinanceAPIException as e:
-                    if str(e.status_code) == "400":
-                        print("Action: SELL "str(volume)+" "+coin+" with "+str(price))
-                    #print(str(e.status_code)+str(e.message))
+            try:
+                order = client.order_limit_sell(
+                            symbol=coin+settings.paircoin,
+                            quantity=volume,
+                            price=price)
+                print("Trade info: "+str(order))
+                time.sleep(2)
+                if(order['status']=='FILLED'):
                     action = "BUY"
+                    fills = order['fills']
+                    #print(str(fills))
+                    fillAmount = order['fills'][0]['qty']
+                    fillPrice = order['fills'][0]['price']
+                    currPrice = fillPrice
+                    fillSide = order['side']
                     t = 0
+                    print("Action: "+str(fillSide)+" - amount: "+str(volume)+" - price: "+str(fillPrice))
                     if start_action == "BUY":
                         hourPrice=resetDf()
                         max_value = max(hourPrice)
@@ -199,42 +183,44 @@ while stop == 0:
                         avg_value = 0 if len(hourPrice) == 0 else sum(hourPrice)/len(hourPrice)
                         volume = getVolume(action, coin, settings.paircoin, min_value, max_value, roundLevel, settings.usd)
                         print("Reset volume to trade: "+str(volume))
-                   
+                else:
+                    try:
+                        client.cancel_order(symbol=coin+settings.paircoin,orderId=order['orderId'])
+                        print("Transaction's cancelled.")
+                    except BinanceAPIException as e:
+                        if str(e.status_code) == "400":
+                            print("Action: SELL "+str(volume)+" "+coin+" with "+str(price))
+                        #print(str(e.status_code)+str(e.message))
+                        action = "BUY"
+                        t = 0
+                        if start_action == "BUY":
+                            hourPrice=resetDf()
+                            max_value = max(hourPrice)
+                            min_value = min(hourPrice)
+                            avg_value = 0 if len(hourPrice) == 0 else sum(hourPrice)/len(hourPrice)
+                            volume = getVolume(action, coin, settings.paircoin, min_value, max_value, roundLevel, settings.usd)
+                            print("Reset volume to trade: "+str(volume))
+            except BinanceAPIException as e:
+                print(str(e.status_code)+str(e.message))      
     if action == "BUY" and float(price) <= min_value*1.003:
         selltry = 0
         t += 1
         if float(price) <= min_value*1.001 or t > 5:
-            order = client.order_limit_buy(
-                        symbol=coin+settings.paircoin,
-                        quantity=volume,
-                        price=price)
-            print("Trade info: "+str(order))
-            time.sleep(2)
-            if(order['status']=='FILLED'):
-                action = "SELL"
-                fills = order['fills']
-                fillAmount = order['fills'][0]['qty']
-                fillPrice = order['fills'][0]['price']
-                currPrice = fillPrice
-                fillSide = order['side']
-                print("Action: "+str(fillSide)+" - amount: "+str(fillAmount)+" - price: "+str(fillPrice))
-                t = 0
-                if start_action == "SELL":
-                    hourPrice=resetDf()
-                    max_value = max(hourPrice)
-                    min_value = min(hourPrice)
-                    avg_value = 0 if len(hourPrice) == 0 else sum(hourPrice)/len(hourPrice)
-                    volume = getVolume(action, coin, settings.paircoin, min_value, max_value, roundLevel, settings.usd)
-                    print("Reset volume to trade: "+str(volume))
-            else:
-                try:
-                    client.cancel_order(symbol=coin+settings.paircoin,orderId=order['orderId'])
-                    print("Transaction's cancelled.")
-                except BinanceAPIException as e:
-                    #print(str(e.status_code)+str(e.message))
-                    if str(e.status_code) == "400":
-                        print("Action: BUY "str(volume)+" "+coin+" with "+str(price))
+            try:
+                order = client.order_limit_buy(
+                            symbol=coin+settings.paircoin,
+                            quantity=volume,
+                            price=price)
+                print("Trade info: "+str(order))
+                time.sleep(2)
+                if(order['status']=='FILLED'):
                     action = "SELL"
+                    fills = order['fills']
+                    fillAmount = order['fills'][0]['qty']
+                    fillPrice = order['fills'][0]['price']
+                    currPrice = fillPrice
+                    fillSide = order['side']
+                    print("Action: "+str(fillSide)+" - amount: "+str(fillAmount)+" - price: "+str(fillPrice))
                     t = 0
                     if start_action == "SELL":
                         hourPrice=resetDf()
@@ -243,7 +229,25 @@ while stop == 0:
                         avg_value = 0 if len(hourPrice) == 0 else sum(hourPrice)/len(hourPrice)
                         volume = getVolume(action, coin, settings.paircoin, min_value, max_value, roundLevel, settings.usd)
                         print("Reset volume to trade: "+str(volume))
-        
+                else:
+                    try:
+                        client.cancel_order(symbol=coin+settings.paircoin,orderId=order['orderId'])
+                        print("Transaction's cancelled.")
+                    except BinanceAPIException as e:
+                        #print(str(e.status_code)+str(e.message))
+                        if str(e.status_code) == "400":
+                            print("Action: BUY "+str(volume)+" "+coin+" with "+str(price))
+                        action = "SELL"
+                        t = 0
+                        if start_action == "SELL":
+                            hourPrice=resetDf()
+                            max_value = max(hourPrice)
+                            min_value = min(hourPrice)
+                            avg_value = 0 if len(hourPrice) == 0 else sum(hourPrice)/len(hourPrice)
+                            volume = getVolume(action, coin, settings.paircoin, min_value, max_value, roundLevel, settings.usd)
+                            print("Reset volume to trade: "+str(volume))
+            except BinanceAPIException as e:
+                print(str(e.status_code)+str(e.message))
     time.sleep(10)
     if volume == 0.0:
         stop = 1
