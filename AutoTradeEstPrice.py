@@ -128,11 +128,11 @@ while stop == 0:
     prices = client.get_all_tickers()
     price = getPrice(coin, prices)
     if float(price) > float(max_value):
-        print("Current price: "+price+" [ min ("+str(min_value)+" ~ "+'{:.2f}'.format(round(float(price)*100/min_value,3)- 100.0) +") -> max ("+str(max_value)+" ~ "+'{:.2f}'.format(round(max_value*100/float(price),3) - 100.0) + ") -> current ]")
+        print("Current price: "+price+" [ min ("+str(min_value)+" ~ "+'{:.2f}'.format(round(float(price)*100/min_value,3)- 100.0) +"%) -> max ("+str(max_value)+" ~ "+'{:.2f}'.format(round(max_value*100/float(price),3) - 100.0) + "%) -> current ]")
     elif float(price) < float(min_value):
-        print("Current price: "+price+" [ current -> min ("+str(min_value)+" ~ "+'{:.2f}'.format(round(float(price)*100/min_value,3)- 100.0) +") -> max ("+str(max_value)+" ~ "+'{:.2f}'.format(round(max_value*100/float(price),3) - 100.0) + ") ]")
+        print("Current price: "+price+" [ current -> min ("+str(min_value)+" ~ "+'{:.2f}'.format(round(float(price)*100/min_value,3)- 100.0) +"%) -> max ("+str(max_value)+" ~ "+'{:.2f}'.format(round(max_value*100/float(price),3) - 100.0) + "%) ]")
     else:
-        print("Current price: "+price+" [ min ("+str(min_value)+" ~ "+'{:.2f}'.format(round(float(price)*100/min_value,3)- 100.0) +") -> current -> max ("+str(max_value)+" ~ "+'{:.2f}'.format(round(max_value*100/float(price),3) - 100.0) + ") ]" )
+        print("Current price: "+price+" [ min ("+str(min_value)+" ~ "+'{:.2f}'.format(round(float(price)*100/min_value,3)- 100.0) +"%) -> current -> max ("+str(max_value)+" ~ "+'{:.2f}'.format(round(max_value*100/float(price),3) - 100.0) + "%) ]" )
 
     if action == "SELL" and start_action == "SELL":
         selltry += 1
