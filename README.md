@@ -3,7 +3,7 @@ Some PYTHON scripts to help trading automatically on Binance<br>
 
 Requirements:<br>
 - Python 3.9<br>
-- python-binance lib (<i><b>command:</b> pip install python-binance</i>)
+- python-binance lib (<i><b>command:</b> pip install python-binance</i>) or (<b>pip install -r requirements.txt</b>)
 - Binance API setup<br>
 
 <br>
