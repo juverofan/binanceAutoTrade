@@ -1,1 +1,1 @@
-binance-python
+python-binance
